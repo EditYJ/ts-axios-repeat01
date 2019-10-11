@@ -79,6 +79,10 @@ router.get('/test_base_request/get', function(req, res) {
   })
 })
 
+router.get('/test_url_params/get', function(req, res) {
+  res.json(req.query)
+})
+
 app.use(router)
 
 const port = process.env.PORT || 8012
