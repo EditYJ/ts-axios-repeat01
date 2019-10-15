@@ -8,6 +8,8 @@ axios({
     b:2,
     c:'hello world'
   }
+}).then(val=>{
+  console.log(val)
 })
 
 axios({
@@ -22,4 +24,6 @@ axios({
     b:2,
     c:'hello world'
   }
+}).then(val=>{
+  console.log(val)
 })
