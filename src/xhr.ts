@@ -9,7 +9,7 @@ export default function xhr(config: AxiosRequestConfig): Promise<AxiosResponse> 
     if (responseType) {
       request.responseType = responseType
     }
-    if(timeout){
+    if (timeout) {
       request.timeout = timeout
     }
 
@@ -19,7 +19,7 @@ export default function xhr(config: AxiosRequestConfig): Promise<AxiosResponse> 
       if (request.readyState !== 4) {
         return
       }
-      if (request.status ===0){
+      if (request.status === 0) {
         return
       }
       const responseData = responseType !== 'text' ? request.response : request.responseText
@@ -35,11 +35,11 @@ export default function xhr(config: AxiosRequestConfig): Promise<AxiosResponse> 
       handleResponse(response)
     }
     // 处理错误信息
-    request.onerror = function handleError(){
+    request.onerror = function handleError() {
       reject(new Error('Network Error!'))
     }
     // 处理超时
-    request.ontimeout = function handleTimeout(){
+    request.ontimeout = function handleTimeout() {
       reject(new Error(`Timeout of ${timeout} ms exceeded`))
     }
 
@@ -54,9 +54,9 @@ export default function xhr(config: AxiosRequestConfig): Promise<AxiosResponse> 
     request.send(data)
 
     function handleResponse(response: AxiosResponse): void {
-      if(response.status>=200 && response.status <300){
+      if (response.status >= 200 && response.status < 300) {
         resolve(response)
-      }else {
+      } else {
         reject(new Error(`Request failed with status code ${response.status}`))
       }
     }
