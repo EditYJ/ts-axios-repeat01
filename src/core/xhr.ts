@@ -1,6 +1,6 @@
-import { AxiosRequestConfig, AxiosResponse } from './types'
-import { parseResponseHeaders } from './helpers/headers'
-import { createError } from './helpers/error'
+import { AxiosRequestConfig, AxiosResponse } from '../types'
+import { parseResponseHeaders } from '../helpers/headers'
+import { createError } from '../helpers/error'
 
 export default function xhr(config: AxiosRequestConfig): Promise<AxiosResponse> {
   return new Promise<AxiosResponse>((resolve, reject) => {
@@ -14,7 +14,7 @@ export default function xhr(config: AxiosRequestConfig): Promise<AxiosResponse> 
       request.timeout = timeout
     }
 
-    request.open(method.toUpperCase(), url, true)
+    request.open(method.toUpperCase(), url!, true)
     // 配置响应对象
     request.onreadystatechange = function handleLoad() {
       if (request.readyState !== 4) {

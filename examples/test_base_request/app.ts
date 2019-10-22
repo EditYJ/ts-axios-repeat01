@@ -1,6 +1,6 @@
-import Axios from '../../src'
+import axios from '../../src'
 
-Axios({
+axios({
   method: 'get',
   url: '/test_base_request/get',
   params: {
