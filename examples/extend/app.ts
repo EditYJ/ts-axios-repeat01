@@ -1,14 +1,13 @@
 import axios from '../../src/index'
 
-axios({
-  url: '/extend/post',
+axios('/extend/post', {
   method: 'post',
   data: {
     msg: 'hi'
   }
 })
 
-axios.request({
+axios({
   url: '/extend/post',
   method: 'post',
   data: {
@@ -29,3 +28,37 @@ axios.post('/extend/post', { msg: 'post' })
 axios.put('/extend/put', { msg: 'put' })
 
 axios.patch('/extend/patch', { msg: 'patch' })
+
+
+// 测试泛型支持
+interface ResponseData<T = any> {
+  code: number
+  result: T
+  message: string
+}
+
+interface User {
+  name: string
+  age: number
+}
+
+function getUser<T>() {
+  return axios<ResponseData<T>>('/extend/user')
+    .then(res => res.data)
+    .catch(err => console.error(err))
+}
+
+async function test() {
+  // user 被推断出为
+  // {
+  //  code: number,
+  //  result: { name: string, age: number },
+  //  message: string
+  // }
+  const user = await getUser<User>()
+  if(user){
+    console.log(user.result.name)
+  }
+}
+
+test()
