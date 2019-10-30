@@ -11,12 +11,12 @@ import InterceptorManager from './InterceptorManager'
 import { which } from 'shelljs'
 
 interface Interceptors {
-  request: InterceptorManager<AxiosRequestConfig>,
+  request: InterceptorManager<AxiosRequestConfig>
   response: InterceptorManager<AxiosResponse>
 }
 
 interface PromiseChain<T> {
-  resolved: ResolvedFn<T> | ((config: AxiosRequestConfig) => AxiosPromise),
+  resolved: ResolvedFn<T> | ((config: AxiosRequestConfig) => AxiosPromise)
   rejected?: RejectedFn
 }
 
@@ -61,7 +61,7 @@ export default class Axios {
       promise = promise.then(resolved, rejected)
     }
 
-    return dispatchRequest(config)
+    return promise
   }
 
   // 不带Data
