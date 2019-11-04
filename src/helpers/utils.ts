@@ -30,7 +30,7 @@ export function deepMerage(...objs: any[]): any {
           if (isPlainObject(result[key])) {
             result[key] = deepMerage(result[key], val)
           } else {
-            result[key] = deepMerage(result[key])
+            result[key] = deepMerage({}, val)
           }
         } else {
           result[key] = val
@@ -38,6 +38,5 @@ export function deepMerage(...objs: any[]): any {
       })
     }
   })
-
   return result
 }
