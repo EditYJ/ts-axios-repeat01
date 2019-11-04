@@ -18,3 +18,26 @@ export function extend<T, U>(to: T, from: U): T & U {
   }
   return to as T & U
 }
+
+export function deepMerage(...objs: any[]): any {
+  const result = Object.create(null)
+
+  objs.forEach(obj => {
+    if (obj) {
+      Object.keys(obj).forEach(key => {
+        const val = obj[key]
+        if (isPlainObject(val)) {
+          if (isPlainObject(result[key])) {
+            result[key] = deepMerage(result[key], val)
+          } else {
+            result[key] = deepMerage(result[key])
+          }
+        } else {
+          result[key] = val
+        }
+      })
+    }
+  })
+
+  return result
+}
