@@ -1,3 +1,5 @@
+import { parseResponseData, transformRequest } from './helpers/data';
+import { processHeaders } from './helpers/headers';
 import { AxiosRequestConfig } from './types';
 
 const defaults: AxiosRequestConfig = {
@@ -7,7 +9,19 @@ const defaults: AxiosRequestConfig = {
     common: {
       Accept: 'application/json, text/plain, */*'
     }
-  }
+  },
+  // transformRequest, transformResponse采用默认的合并策略，优先使用自定义策略覆盖掉默认策略
+  transformRequest: [
+    function (data: any, headers: any): any {
+      processHeaders(headers, data)
+      return transformRequest(data)
+    }
+  ],
+  transformResponse: [
+    function (data: any): any {
+      return parseResponseData(data)
+    }
+  ]
 }
 
 const methodsNodata = ['delete', 'get', 'head', 'options']
