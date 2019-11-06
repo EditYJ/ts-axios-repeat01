@@ -4,7 +4,7 @@ import { AxiosRequestConfig, AxiosResponse } from '../types';
 
 export default function xhr(config: AxiosRequestConfig): Promise<AxiosResponse> {
   return new Promise<AxiosResponse>((resolve, reject) => {
-    const { url, method = 'get', data = null, headers, responseType, timeout } = config
+    const { url, method = 'get', data = null, headers, responseType, timeout, cancelToken } = config
 
     const request = new XMLHttpRequest()
     if (responseType) {
@@ -62,6 +62,16 @@ export default function xhr(config: AxiosRequestConfig): Promise<AxiosResponse> 
         request.setRequestHeader(name, headers[name])
       }
     })
+
+    // 取消请求的代码逻辑
+    if (cancelToken) {
+      // tslint:disable-next-line: no-floating-promises
+      cancelToken.promise.then(reason => {
+        request.abort()
+        reject(reason)
+      })
+    }
+
     request.send(data)
 
     function handleResponse(response: AxiosResponse): void {
