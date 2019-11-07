@@ -54,13 +54,15 @@ poll: true
  serverSideRender: false,
  //  关闭服务器端渲染模式。有关详细信息，请参阅服务器端渲染部分。
  */
-app.use(webpackDevMiddleware(compiler, {
-  publicPath: '/__build__/',
-  stats: {
-    colors: true,
-    chunk: false
-  }
-}))
+app.use(
+  webpackDevMiddleware(compiler, {
+    publicPath: '/__build__/',
+    stats: {
+      colors: true,
+      chunk: false
+    }
+  })
+)
 
 // 加入热重载功能
 app.use(webpackHotMiddleware(compiler))
@@ -89,12 +91,12 @@ router.post('/test_data_request/post', function(req, res) {
 
 router.post('/test_data_request/buffer', function(req, res) {
   let msg = []
-  req.on('data',(chunk)=>{
-    if (chunk){
+  req.on('data', chunk => {
+    if (chunk) {
       msg.push(chunk)
     }
   })
-  req.on('end',()=>{
+  req.on('end', () => {
     let buf = Buffer.concat(msg)
     res.json(buf.toJSON())
   })
@@ -120,6 +122,7 @@ router.get('/error/timeout', function(req, res) {
 })
 
 registerExtendRouter()
+registerCancelRouter()
 
 app.use(router)
 
@@ -129,7 +132,7 @@ module.exports = app.listen(port, () => {
   console.log(`Server listening on http://localhost:${port}, Ctrl+C to stop`)
 })
 
-function registerExtendRouter () {
+function registerExtendRouter() {
   router.get('/extend/get', function(req, res) {
     res.json({
       msg: 'hello world'
@@ -175,7 +178,21 @@ function registerExtendRouter () {
     res.end('hello')
   })
 
-  router.post('/config/post', function(req, res){
+  router.post('/config/post', function(req, res) {
     res.json(req.body)
+  })
+}
+
+function registerCancelRouter() {
+  router.get('/cancel/get', function(req, res) {
+    setTimeout(() => {
+      res.json('hello')
+    }, 1000)
+  })
+
+  router.post('/cancel/post', function(req, res) {
+    setTimeout(() => {
+      res.json(req.body)
+    }, 1000)
   })
 }
