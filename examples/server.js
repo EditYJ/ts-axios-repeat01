@@ -4,6 +4,9 @@ const webpack = require('webpack')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const WebpackConfig = require('./webpack.config')
+const cookieParser = require('cookie-parser')
+
+require('./server2')
 
 const app = express()
 // 得到webpack的编译结果
@@ -72,6 +75,8 @@ app.use(express.static(__dirname))
 
 app.use(bodyParser.json())
 
+app.use(cookieParser())
+
 app.use(bodyParser.urlencoded({ extended: true }))
 
 const router = express.Router()
@@ -123,6 +128,7 @@ router.get('/error/timeout', function(req, res) {
 
 registerExtendRouter()
 registerCancelRouter()
+registerMoreRouter()
 
 app.use(router)
 
@@ -194,5 +200,11 @@ function registerCancelRouter() {
     setTimeout(() => {
       res.json(req.body)
     }, 1000)
+  })
+}
+
+function registerMoreRouter() {
+  router.get('/more/get', function (req, res) {
+    res.json(req.cookies)
   })
 }
