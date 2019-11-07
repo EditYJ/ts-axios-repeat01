@@ -4,7 +4,7 @@ import { AxiosRequestConfig, AxiosResponse } from '../types';
 
 export default function xhr(config: AxiosRequestConfig): Promise<AxiosResponse> {
   return new Promise<AxiosResponse>((resolve, reject) => {
-    const { url, method = 'get', data = null, headers, responseType, timeout, cancelToken } = config
+    const { url, method = 'get', data = null, headers, responseType, timeout, cancelToken, withCredentials } = config
 
     const request = new XMLHttpRequest()
     if (responseType) {
@@ -12,6 +12,9 @@ export default function xhr(config: AxiosRequestConfig): Promise<AxiosResponse> 
     }
     if (timeout) {
       request.timeout = timeout
+    }
+    if (withCredentials) {
+      request.withCredentials = withCredentials
     }
 
     request.open(method.toUpperCase(), url!, true)
