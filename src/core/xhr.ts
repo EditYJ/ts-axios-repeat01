@@ -19,7 +19,8 @@ export default function xhr(config: AxiosRequestConfig): Promise<AxiosResponse> 
       xsrfCookieName,
       xsrfHeaderName,
       onDownloadProgress,
-      onUploadProgress
+      onUploadProgress,
+      auth
     } = config
 
     const request = new XMLHttpRequest()
@@ -104,6 +105,10 @@ export default function xhr(config: AxiosRequestConfig): Promise<AxiosResponse> 
         if (xsrfValue && xsrfHeaderName) {
           headers[xsrfHeaderName] = xsrfValue
         }
+      }
+
+      if (auth) {
+        headers['Authorization'] = 'Basic ' + btoa(auth.username + ':' + auth.password)
       }
 
       // 放置头部Headers
