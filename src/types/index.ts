@@ -30,6 +30,9 @@ export interface AxiosRequestConfig {
 
   withCredentials?: boolean
 
+  xsrfHeaderName?: string
+  xsrfCookieName?: string
+
   [propName: string]: any
 }
 

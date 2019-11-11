@@ -10,6 +10,10 @@ const defaults: AxiosRequestConfig = {
       Accept: 'application/json, text/plain, */*'
     }
   },
+
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+
   // transformRequest, transformResponse采用默认的合并策略，优先使用自定义策略覆盖掉默认策略
   transformRequest: [
     function (data: any, headers: any): any {

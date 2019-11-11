@@ -1,10 +1,23 @@
 import { createError } from '../helpers/error';
 import { parseResponseHeaders } from '../helpers/headers';
 import { AxiosRequestConfig, AxiosResponse } from '../types';
+import { isURLSameOrigin } from '../helpers/url';
+import cookie from '../helpers/cookie';
 
 export default function xhr(config: AxiosRequestConfig): Promise<AxiosResponse> {
   return new Promise<AxiosResponse>((resolve, reject) => {
-    const { url, method = 'get', data = null, headers, responseType, timeout, cancelToken, withCredentials } = config
+    const {
+      url,
+      method = 'get',
+      data = null,
+      headers,
+      responseType,
+      timeout,
+      cancelToken,
+      withCredentials,
+      xsrfCookieName,
+      xsrfHeaderName
+    } = config
 
     const request = new XMLHttpRequest()
     if (responseType) {
@@ -55,6 +68,13 @@ export default function xhr(config: AxiosRequestConfig): Promise<AxiosResponse> 
         'ECONNABORTED',
         request
       ))
+    }
+
+    if ((withCredentials || isURLSameOrigin(url!)) && xsrfCookieName) {
+      const xsrfValue = cookie.read(xsrfCookieName)
+      if (xsrfValue && xsrfHeaderName) {
+        headers[xsrfHeaderName] = xsrfValue
+      }
     }
 
     // 放置头部Headers
