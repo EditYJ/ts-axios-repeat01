@@ -1,4 +1,4 @@
-import { isDate, isPlainObject } from './utils'
+import { isDate, isPlainObject, isURLSearchParams } from './utils'
 
 interface URLOrigin {
   protocol: string
@@ -16,43 +16,49 @@ function encode(val: string): string {
     .replace(/%5D/ig, ']')
 }
 
-export function buildURL(url: string, params?: any): string {
+export function buildURL(url: string, params?: any, paramsSerializer?: (params: any) => string): string {
   // 如果参数为空则原样返回
   if (!params) {
     return url
   }
 
-  const parts: string[] = []
+  let serializedParams
 
-  // 遍历 params 得到参数数组列表
-  Object.keys(params).forEach((key) => {
-    const val = params[key]
-    // 如果val不存在没有值 则进入下一次循环
-    if (val === null || typeof val === 'undefined') {
-      return
-    }
-    // val有值的情况
-    // 判断是不是一个数组
-    let values = []
-    if (Array.isArray(val)) {
-      values = val
-      key += '[]'
-    } else {
-      values = [val]
-    }
-    // 遍历values判断值的类型做相应的处理
-    values.forEach((val) => {
-      if (isDate(val)) {
-        val = val.toISOString()
-      } else if (isPlainObject(val)) {
-        val = JSON.stringify(val)
+  if (paramsSerializer) {
+    serializedParams = paramsSerializer(params)
+  } else if (isURLSearchParams(params)) {
+    serializedParams = params.toString()
+  } else {
+    const parts: string[] = []
+    // 遍历 params 得到参数数组列表
+    Object.keys(params).forEach((key) => {
+      const val = params[key]
+      // 如果val不存在没有值 则进入下一次循环
+      if (val === null || typeof val === 'undefined') {
+        return
       }
-      parts.push(`${encode(key)}=${encode(val)}`)
+      // val有值的情况
+      // 判断是不是一个数组
+      let values = []
+      if (Array.isArray(val)) {
+        values = val
+        key += '[]'
+      } else {
+        values = [val]
+      }
+      // 遍历values判断值的类型做相应的处理
+      values.forEach((val) => {
+        if (isDate(val)) {
+          val = val.toISOString()
+        } else if (isPlainObject(val)) {
+          val = JSON.stringify(val)
+        }
+        parts.push(`${encode(key)}=${encode(val)}`)
+      })
     })
-  })
-
-  // 给参数加上‘&’分隔符
-  let serializedParams = parts.join('&')
+    // 给参数加上‘&’分隔符
+    serializedParams = parts.join('&')
+  }
   // 如果serializedParams不为空
   if (serializedParams) {
     // 判断是否存在哈希参数，如果存在则去除哈希参数
@@ -65,6 +71,14 @@ export function buildURL(url: string, params?: any): string {
   }
 
   return url
+}
+
+export function isAbsoluteURL(url: string): boolean {
+  return /(^[a-z][a-z\d\+\-\.]*:)?\/\//.test(url)
+}
+
+export function combineURL(baseURL: string, relativeURL?: string): string {
+  return relativeURL ? (baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')) : baseURL
 }
 
 export function isURLSameOrigin(requestURL: string): boolean {
