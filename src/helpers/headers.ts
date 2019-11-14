@@ -28,17 +28,14 @@ export function parseResponseHeaders(val: string): any {
   const result = Object.create(null)
 
   val.split('\r\n').forEach(line => {
-    let [key, value] = line.split(':')
+    let [key, ...values] = line.split(':')
     key = key.trim().toLowerCase()
     if (!key) {
       return
     }
-    if (value) {
-      value = value.trim()
-    }
-    result[key] = value
+    const val = values.join(':').trim()
+    result[key] = val
   })
-
   return result
 }
 
