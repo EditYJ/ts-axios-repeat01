@@ -1,6 +1,6 @@
 {
   "name": "ts-axios-repeat01",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "",
   "keywords": [],
   "main": "dist/axios.umd.js",
@@ -36,7 +36,6 @@
     "travis-deploy-once": "travis-deploy-once",
     "prepub": "npm run lint && npm run build",
     "pub": "sh release.sh"
-
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
